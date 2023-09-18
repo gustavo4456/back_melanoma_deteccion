@@ -1,0 +1,12 @@
+# Ignorar archivos de imágenes
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+
+# Ignorar archivos .h5
+*.h5
+
+# Ignorar archivos .npy
+*.npy
