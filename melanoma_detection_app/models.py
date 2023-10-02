@@ -22,6 +22,7 @@ class Detecciones(models.Model):
     imagen = models.ImageField(upload_to='detections/', null=True, blank=True)
     fecha_creacion = models.DateTimeField(default=datetime.now)
     resultado = models.CharField(max_length=2048)
+    precision = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
 
     def __str__(self):
         return f"Detección {self.id}"

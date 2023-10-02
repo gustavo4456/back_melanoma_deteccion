@@ -63,8 +63,11 @@ def detect_melanoma(request):
     # Obtener la predicción del modelo
     predictions = model.predict(input_image)
     predicted_class = np.argmax(predictions[0])  # Índice de la clase con mayor probabilidad
-    class_names = ['No Melanoma', 'Melanoma']  # Nombre de las clases
+    class_names = ['Benigno', 'Maligno']  # Nombre de las clases
 
+
+# Obtener el porcentaje de confianza (probabilidad) de la clase predicha
+    confidence_percentage = predictions[0][predicted_class] * 100.0
 
 
 # Guardar la imagen en la tabla Detecciones
@@ -72,6 +75,7 @@ def detect_melanoma(request):
     deteccion.imagen.save(file.name, file, save=True)
     # deteccion.fecha_creacion = datetime.now()
     deteccion.resultado = class_names[predicted_class]
+    deteccion.precision = confidence_percentage
     deteccion.save()
 
     # Obtener la ID y el nombre de la etiqueta desde la solicitud
@@ -100,7 +104,8 @@ def detect_melanoma(request):
 
     # devolver la respuesta
     response = {
-        'result': class_names[predicted_class]
+        'result': class_names[predicted_class],
+        'confidence': confidence_percentage
     }
     return Response(response)
 
