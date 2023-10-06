@@ -117,6 +117,6 @@ def delete_usuarios_detecciones(request):
         # Elimina los registros de UsuariosDetecciones
         usuarios_detecciones.delete()
 
-        return Response({'message': 'Las detecciones han sido eliminadas correctamente.'}, status=status.HTTP_204_NO_CONTENT)
+        return Response({'message': 'Las detecciones han sido eliminadas correctamente.'})
     except Exception as e:
         return Response({'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
