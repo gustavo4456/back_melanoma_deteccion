@@ -94,3 +94,18 @@ def get_detecciones(request):
     serializer = UsuariosDeteccionesSerializer(detecciones, many=True, context={'request': request})  # Usa el serializador correcto aquí
     # print(serializer.data)
     return Response({'detecciones': serializer.data})
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_usuarios_detecciones(request, deteccion_id):
+    try:
+        # Buscar el registro de UsuariosDetecciones por su ID y usuario autenticado
+        usuarios_detecciones = UsuariosDetecciones.objects.get(id=deteccion_id, usuario=request.user)
+    except UsuariosDetecciones.DoesNotExist:
+        return Response({'message': 'La detección no existe o no tienes permiso para eliminarla.'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Eliminar la detección
+    usuarios_detecciones.delete()
+
+    return Response({'message': 'La detección ha sido eliminada correctamente.'}, status=status.HTTP_204_NO_CONTENT)
