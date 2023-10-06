@@ -98,14 +98,25 @@ def get_detecciones(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
-def delete_usuarios_detecciones(request, deteccion_id):
+def delete_usuarios_detecciones(request):
     try:
-        # Buscar el registro de UsuariosDetecciones por su ID y usuario autenticado
-        usuarios_detecciones = UsuariosDetecciones.objects.get(id=deteccion_id, usuario=request.user)
-    except UsuariosDetecciones.DoesNotExist:
-        return Response({'message': 'La detección no existe o no tienes permiso para eliminarla.'}, status=status.HTTP_404_NOT_FOUND)
+        # Obtén una lista de IDs de detecciones a eliminar del cuerpo de la solicitud
+        deteccion_ids = request.data.get('deteccion_ids', [])
 
-    # Eliminar la detección
-    usuarios_detecciones.delete()
+        # Verifica que al menos un ID haya sido proporcionado
+        if not deteccion_ids:
+            return Response({'message': 'Debes proporcionar al menos un ID de detección para eliminar.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    return Response({'message': 'La detección ha sido eliminada correctamente.'}, status=status.HTTP_204_NO_CONTENT)
+        # Filtra los registros de UsuariosDetecciones que pertenecen al usuario autenticado y tienen IDs en la lista
+        usuarios_detecciones = UsuariosDetecciones.objects.filter(usuario=request.user, id__in=deteccion_ids)
+
+        # Verifica si se encontraron registros para eliminar
+        if not usuarios_detecciones:
+            return Response({'message': 'No se encontraron detecciones para eliminar o no tienes permiso para eliminarlas.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Elimina los registros de UsuariosDetecciones
+        usuarios_detecciones.delete()
+
+        return Response({'message': 'Las detecciones han sido eliminadas correctamente.'}, status=status.HTTP_204_NO_CONTENT)
+    except Exception as e:
+        return Response({'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

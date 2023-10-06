@@ -18,7 +18,8 @@ urlpatterns = [
 
     path('api/etiquetas/', viewsDB.get_etiquetas, name='etiquetas-list'),
     path('api/detecciones-usuarios/', viewsDB.get_detecciones, name='deteccion-usuarios-list'),
-    path('api/detecciones-usuarios/<int:deteccion_id>/', viewsDB.delete_usuarios_detecciones, name='delete_usuarios_detecciones'),
+    path('api/delete-detecciones-usuarios/', viewsDB.delete_usuarios_detecciones, name='delete_usuarios_detecciones'),
+
 
 
 
