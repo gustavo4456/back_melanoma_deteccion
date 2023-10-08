@@ -120,3 +120,23 @@ def delete_usuarios_detecciones(request):
         return Response({'message': 'Las detecciones han sido eliminadas correctamente.'})
     except Exception as e:
         return Response({'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_usuario(request, pk):
+    try:
+        usuario = Usuarios.objects.get(pk=pk)
+
+        # Verifica que el usuario que realiza la solicitud sea el propietario del perfil o un administrador
+        if request.user == usuario or request.user.is_staff:
+            serializer = UsuarioSerializer(usuario, data=request.data, partial=True)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'message': 'No tienes permiso para actualizar este usuario.'}, status=status.HTTP_403_FORBIDDEN)
+    except Usuarios.DoesNotExist:
+        return Response({'message': 'El usuario no existe.'}, status=status.HTTP_404_NOT_FOUND)

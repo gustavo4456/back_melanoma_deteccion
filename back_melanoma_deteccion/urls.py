@@ -15,6 +15,7 @@ urlpatterns = [
 
     path('api/usuarios/', viewsDB.get_usuarios, name='usuario-list'),
     path('api/usuarios/registro/', viewsDB.registrar_usuario, name='registro_usuario'),
+    path('api/usuarios/<int:pk>/', viewsDB.update_usuario, name='update_usuario'),
 
     path('api/etiquetas/', viewsDB.get_etiquetas, name='etiquetas-list'),
     path('api/detecciones-usuarios/', viewsDB.get_detecciones, name='deteccion-usuarios-list'),
