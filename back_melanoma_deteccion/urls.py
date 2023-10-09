@@ -24,6 +24,10 @@ urlpatterns = [
 
 
 
+path('api/configuracion-usuario/', viewsDB.configuracion_usuario, name='configuracion_usuario'),
+
+
+
 
     path('api/login/', viewsDB.user_login, name='user_login'),
     path('api/logout/', viewsDB.user_logout, name='user_logout'),

@@ -11,9 +11,9 @@ class Usuarios(AbstractUser):
         return f"{self.first_name} {self.last_name}"
 
 class ConfiguracionUsuario(models.Model):
-    usuario = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
-    notificaciones_habilitadas = models.BooleanField()
-    tema_preferido = models.CharField(max_length=255)
+    usuario = models.OneToOneField(Usuarios, on_delete=models.CASCADE, unique=True)
+    notificaciones_habilitadas = models.BooleanField(default= True)
+    tema_preferido = models.BooleanField(default = False)
 
     def __str__(self):
         return f"Configuración de {self.usuario}"

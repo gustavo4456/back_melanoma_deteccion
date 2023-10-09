@@ -6,8 +6,8 @@ from rest_framework.decorators import api_view, permission_classes, parser_class
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.parsers import FileUploadParser
-from .models import Usuarios, Etiquetas, UsuariosDetecciones
-from .serializers import UsuarioSerializer, EtiquetaSerializer, UsuariosDeteccionesSerializer
+from .models import Usuarios, Etiquetas, UsuariosDetecciones, ConfiguracionUsuario
+from .serializers import UsuarioSerializer, EtiquetaSerializer, UsuariosDeteccionesSerializer, ConfiguracionUsuarioSerializer
 from rest_framework import status
 
 from django.http import JsonResponse
@@ -59,13 +59,20 @@ def check_authentication(request):
         return Response({'message': 'Usuario no autenticado'}, status=401)
 
 @api_view(['POST'])
-@permission_classes([AllowAny])  # Esto permite el acceso sin autenticación
+@permission_classes([AllowAny])
 def registrar_usuario(request):
-    serializer = UsuarioSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response({'mensaje': 'Usuario registrado con éxito'})
-    return Response(serializer.errors, status=400)
+    # Serializa los datos del usuario a registrar
+    usuario_serializer = UsuarioSerializer(data=request.data)
+    if usuario_serializer.is_valid():
+        usuario = usuario_serializer.save()
+
+        # Crea una configuración de usuario para el usuario registrado
+        configuracion_usuario = ConfiguracionUsuario(usuario=usuario)
+        configuracion_usuario.save()  # Guarda la configuración de usuario
+
+        return Response({'mensaje': 'Usuario registrado con éxito'}, status=201)
+    return Response(usuario_serializer.errors, status=400)
+
 
 
 @api_view(['GET'])
@@ -140,3 +147,31 @@ def update_usuario(request, pk):
             return Response({'message': 'No tienes permiso para actualizar este usuario.'}, status=status.HTTP_403_FORBIDDEN)
     except Usuarios.DoesNotExist:
         return Response({'message': 'El usuario no existe.'}, status=status.HTTP_404_NOT_FOUND)
+    
+
+
+@api_view(['GET', 'PUT'])
+@permission_classes([IsAuthenticated])
+def configuracion_usuario(request):
+    try:
+        usuario = request.user  # Obtén el usuario autenticado
+
+        # Verifica si ya existe una configuración de usuario para este usuario
+        configuracion_usuario, created = ConfiguracionUsuario.objects.get_or_create(usuario=usuario)
+
+        if request.method == 'GET':
+            # Si la solicitud es una GET, simplemente se serializa y devuelve la configuración del usuario
+            serializer = ConfiguracionUsuarioSerializer(configuracion_usuario)
+            return Response(serializer.data)
+
+        elif request.method == 'PUT':
+            # Si la solicitud es una PUT, actualiza la configuración del usuario con los datos proporcionados
+            serializer = ConfiguracionUsuarioSerializer(configuracion_usuario, data=request.data, partial=True)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    except ConfiguracionUsuario.DoesNotExist:
+        return Response({'message': 'La configuración de usuario no existe.'}, status=status.HTTP_404_NOT_FOUND)
