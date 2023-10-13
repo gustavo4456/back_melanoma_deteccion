@@ -6,8 +6,8 @@ from rest_framework.decorators import api_view, permission_classes, parser_class
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.parsers import FileUploadParser
-from .models import Usuarios, Etiquetas, UsuariosDetecciones, ConfiguracionUsuario
-from .serializers import UsuarioSerializer, EtiquetaSerializer, UsuariosDeteccionesSerializer, ConfiguracionUsuarioSerializer
+from .models import Usuarios, Etiquetas, UsuariosDetecciones, ConfiguracionUsuario, Notificaciones
+from .serializers import UsuarioSerializer, EtiquetaSerializer, UsuariosDeteccionesSerializer, ConfiguracionUsuarioSerializer, NotificacionSerializer
 from rest_framework import status
 
 from django.http import JsonResponse
@@ -175,3 +175,54 @@ def configuracion_usuario(request):
 
     except ConfiguracionUsuario.DoesNotExist:
         return Response({'message': 'La configuración de usuario no existe.'}, status=status.HTTP_404_NOT_FOUND)
+    
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_notificaciones(request):
+    # Obtén todas las notificaciones
+    notificaciones = Notificaciones.objects.all()
+    
+    # Serializa las notificaciones
+    serializer = NotificacionSerializer(notificaciones, many=True)
+    
+    return Response(serializer.data)
+
+
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def crear_notificacion(request):
+#     if request.method == 'POST':
+#         serializer = NotificacionSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+# @api_view(['DELETE'])
+# @permission_classes([IsAuthenticated])
+# def eliminar_notificacion(request, notificacion_id):
+#     try:
+#         notificacion = Notificaciones.objects.get(id=notificacion_id)
+#     except Notificaciones.DoesNotExist:
+#         return Response({'message': 'La notificación no existe.'}, status=status.HTTP_404_NOT_FOUND)
+
+#     if request.method == 'DELETE':
+#         notificacion.delete()
+#         return Response({'message': 'Notificación eliminada correctamente.'})
+    
+# @api_view(['PUT'])
+# @permission_classes([IsAuthenticated])
+# def actualizar_notificacion(request, notificacion_id):
+#     try:
+#         notificacion = Notificaciones.objects.get(id=notificacion_id)
+#     except Notificaciones.DoesNotExist:
+#         return Response({'message': 'La notificación no existe.'}, status=status.HTTP_404_NOT_FOUND)
+
+#     if request.method == 'PUT':
+#         serializer = NotificacionSerializer(notificacion, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
