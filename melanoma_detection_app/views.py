@@ -6,8 +6,8 @@ from rest_framework.decorators import api_view, permission_classes, parser_class
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.parsers import FileUploadParser
-from .models import Usuarios, Etiquetas, UsuariosDetecciones, ConfiguracionUsuario
-from .serializers import UsuarioSerializer, EtiquetaSerializer, UsuariosDeteccionesSerializer, ConfiguracionUsuarioSerializer
+from .models import Usuarios, Etiquetas, UsuariosDetecciones, ConfiguracionUsuario, Notificaciones
+from .serializers import UsuarioSerializer, EtiquetaSerializer, UsuariosDeteccionesSerializer, ConfiguracionUsuarioSerializer, NotificacionSerializer
 from rest_framework import status
 
 from django.http import JsonResponse

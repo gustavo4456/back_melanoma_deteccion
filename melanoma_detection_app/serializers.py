@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Usuarios, Etiquetas, UsuariosDetecciones, Detecciones, ConfiguracionUsuario
+from .models import Usuarios, Etiquetas, UsuariosDetecciones, Detecciones, ConfiguracionUsuario, Notificaciones
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,4 +26,9 @@ class UsuariosDeteccionesSerializer(serializers.ModelSerializer):
 class ConfiguracionUsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConfiguracionUsuario
+        fields = '__all__'
+
+class NotificacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notificaciones
         fields = '__all__'
