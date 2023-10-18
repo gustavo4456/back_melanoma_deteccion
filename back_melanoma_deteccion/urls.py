@@ -29,6 +29,18 @@ urlpatterns = [
 
 
 
+    path('api/get_notificaciones/', viewsDB.get_notificaciones, name='get_notificaciones'),
+
+# # Vista para crear una notificación
+#     path('api/crear-notificacion/', viewsDB.crear_notificacion, name='crear_notificacion'),
+
+#     # Vista para eliminar una notificación, espera un parámetro notificacion_id en la URL
+#     path('api/eliminar-notificacion/<int:notificacion_id>/', viewsDB.eliminar_notificacion, name='eliminar_notificacion'),
+
+#     # Vista para actualizar una notificación, espera un parámetro notificacion_id en la URL
+#     path('api/actualizar-notificacion/<int:notificacion_id>/', viewsDB.actualizar_notificacion, name='actualizar_notificacion'),
+
+
 
     path('api/login/', viewsDB.user_login, name='user_login'),
     path('api/logout/', viewsDB.user_logout, name='user_logout'),

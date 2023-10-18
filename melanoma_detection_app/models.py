@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from datetime import datetime
 
 class Usuarios(AbstractUser):
-    fecha_nacimiento = models.DateField()
+    fecha_nacimiento = models.DateField(null=True, blank=True)
     sexo = models.CharField(max_length=50)
     foto_perfil = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
 
@@ -34,9 +34,8 @@ class Etiquetas(models.Model):
         return self.nombre
 
 class Notificaciones(models.Model):
-    usuario = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
     mensaje = models.CharField(max_length=2048)
-    fecha = models.DateTimeField()
+    fecha = models.DateTimeField(default=datetime.now)
 
     def __str__(self):
         return f"Notificación {self.id}"
