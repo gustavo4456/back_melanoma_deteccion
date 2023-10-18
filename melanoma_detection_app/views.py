@@ -149,6 +149,17 @@ def update_usuario(request, pk):
         return Response({'message': 'El usuario no existe.'}, status=status.HTTP_404_NOT_FOUND)
     
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_notificaciones(request):
+    # Obtén todas las notificaciones
+    notificaciones = Notificaciones.objects.all()
+    
+    # Serializa las notificaciones
+    serializer = NotificacionSerializer(notificaciones, many=True)
+    
+    return Response(serializer.data)
+
 
 @api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])
