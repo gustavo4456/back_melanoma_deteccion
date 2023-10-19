@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 import os
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -121,13 +122,24 @@ def delete_usuarios_detecciones(request):
         if not usuarios_detecciones:
             return Response({'message': 'No se encontraron detecciones para eliminar o no tienes permiso para eliminarlas.'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Elimina los registros de UsuariosDetecciones
-        usuarios_detecciones.delete()
+        # Itera a través de los registros de UsuariosDetecciones y elimina tanto la detección como el registro en UsuariosDetecciones.
+        for usuarios_deteccion in usuarios_detecciones:
+            # Obtén la instancia de Detecciones a la que está relacionada este UsuariosDetecciones.
+            deteccion = usuarios_deteccion.deteccion
+            # Obtén la ruta del archivo de imagen asociado a la detección.
+            imagen_path = os.path.join(settings.MEDIA_ROOT, str(deteccion.imagen))
+            # Elimina tanto la instancia de UsuariosDetecciones como la de Detecciones.
+            usuarios_deteccion.delete()
+            deteccion.delete()
+            # Elimina el archivo físico de la imagen.
+            if os.path.exists(imagen_path):
+                os.remove(imagen_path)
 
-        return Response({'message': 'Las detecciones han sido eliminadas correctamente.'})
+        return Response({'message': 'Las detecciones y los registros de UsuariosDetecciones han sido eliminados correctamente.'})
     except Exception as e:
         return Response({'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+
+
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
