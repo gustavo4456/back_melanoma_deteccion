@@ -87,12 +87,12 @@ WSGI_APPLICATION = 'back_melanoma_deteccion.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'deteccion_melanoma2',
-        'USER': 'root',
-        'PASSWORD': '',
+        'USER': 'gustavosql',
+        'PASSWORD': 'admin',
         'HOST': '127.0.0.1',  # O la dirección de tu servidor de base de datos
-        'PORT': '3306',       # El puerto de tu servidor de base de datos
+        'PORT': '',       # El puerto de tu servidor de base de datos
     }
 }
 
