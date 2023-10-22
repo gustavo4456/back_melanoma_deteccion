@@ -7,8 +7,8 @@ from rest_framework.decorators import api_view, permission_classes, parser_class
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.parsers import FileUploadParser
-from .models import Usuarios, Etiquetas, UsuariosDetecciones, ConfiguracionUsuario, Notificaciones
-from .serializers import UsuarioSerializer, EtiquetaSerializer, UsuariosDeteccionesSerializer, ConfiguracionUsuarioSerializer, NotificacionSerializer
+from .models import Usuarios, Etiquetas, UsuariosDetecciones, ConfiguracionUsuario, Notificaciones, UsuariosNotificaciones
+from .serializers import UsuarioSerializer, EtiquetaSerializer, UsuariosDeteccionesSerializer, ConfiguracionUsuarioSerializer, NotificacionSerializer, UsuariosNotificacionesSerializer
 from rest_framework import status
 
 from django.http import JsonResponse
@@ -208,6 +208,18 @@ def get_notificaciones(request):
     
     # Serializa las notificaciones
     serializer = NotificacionSerializer(notificaciones, many=True)
+    
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_usuarios_notificaciones(request):
+    # Obtén todas las relaciones de UsuariosNotificaciones para el usuario autenticado
+    usuarios_notificaciones = UsuariosNotificaciones.objects.filter(usuario=request.user)
+    
+    # Serializa las relaciones
+    serializer = UsuariosNotificacionesSerializer(usuarios_notificaciones, many=True)
     
     return Response(serializer.data)
 

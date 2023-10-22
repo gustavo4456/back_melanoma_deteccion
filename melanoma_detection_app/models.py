@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
 from datetime import datetime
 
@@ -48,3 +50,28 @@ class UsuariosDetecciones(models.Model):
 
     def __str__(self):
         return f"Usuario: {self.usuario}, Detección: {self.deteccion}"
+    
+
+class UsuariosNotificaciones(models.Model):
+    usuario = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
+    notificacion = models.ForeignKey(Notificaciones, on_delete=models.CASCADE)
+    leido = models.BooleanField(default=False)  # Campo para rastrear si la notificación fue leída o no
+
+    def __str__(self):
+        return f"Usuario: {self.usuario}, Notificación: {self.notificacion}"
+
+
+
+
+# Define el manejador de señales
+@receiver(post_save, sender=Notificaciones)
+def create_usuarios_notificaciones(sender, instance, created, **kwargs):
+    if created:
+        from .models import UsuariosNotificaciones  # Importa tu modelo de UsuariosNotificaciones aquí
+
+        # Obtén todos los usuarios
+        users = Usuarios.objects.all()
+
+        # Crea un registro en UsuariosNotificaciones para cada usuario
+        for user in users:
+            UsuariosNotificaciones.objects.create(usuario=user, notificacion=instance, leido=False)

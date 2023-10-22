@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Usuarios, Etiquetas, UsuariosDetecciones, Detecciones, ConfiguracionUsuario, Notificaciones
+from .models import Usuarios, Etiquetas, UsuariosDetecciones, Detecciones, ConfiguracionUsuario, Notificaciones, UsuariosNotificaciones
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,3 +33,9 @@ class NotificacionSerializer(serializers.ModelSerializer):
         model = Notificaciones
         fields = '__all__'
 
+
+class UsuariosNotificacionesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UsuariosNotificaciones
+        fields = '__all__'  # Esto serializará todos los campos del modelo UsuariosDetecciones
+        depth = 1  # Asegura que se incluyan los datos completos de las relaciones
