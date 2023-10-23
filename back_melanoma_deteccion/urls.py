@@ -27,6 +27,7 @@ urlpatterns = [
 
     path('api/configuracion-usuario/', viewsDB.configuracion_usuario, name='configuracion_usuario'),
 
+    path('api/marcar-notificacion/<int:notificacion_id>/', viewsDB.marcar_notificacion, name='marcar_notificacion'),
 
 
     path('api/get_notificaciones/', viewsDB.get_notificaciones, name='get_notificaciones'),

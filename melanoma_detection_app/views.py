@@ -143,6 +143,23 @@ def delete_usuarios_detecciones(request):
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
+def marcar_notificacion(request, notificacion_id):
+    try:
+        notificacion = UsuariosNotificaciones.objects.get(id=notificacion_id, usuario=request.user)
+        
+        # Obtén el valor para 'leido' del cuerpo de la solicitud
+        leido = request.data.get('leido', False)  # Si no se proporciona, se establece como False
+        
+        notificacion.leido = leido
+        notificacion.save()
+        return Response({'message': 'Notificación actualizada correctamente.'})
+    except UsuariosNotificaciones.DoesNotExist:
+        return Response({'message': 'La notificación no existe o no tienes permiso para marcarla.'}, status=404)
+
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_usuario(request, pk):
     try:
         usuario = Usuarios.objects.get(pk=pk)
